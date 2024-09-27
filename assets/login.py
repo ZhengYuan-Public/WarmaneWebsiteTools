@@ -42,14 +42,14 @@ def wait_for_manual_login(driver, timeout=120):
     return False
 
 def save_cookies(driver):
-    with open('../cookies.pkl', 'wb') as file:
+    with open('./cookies.pkl', 'wb') as file:
         pickle.dump(driver.get_cookies(), file)
     print('Manual login successful. Cookies saved.')
 
 def load_cookies(driver):
     print('Attempting to login using cookies...')
     try:
-        with open('../cookies.pkl', 'rb') as file:
+        with open('./cookies.pkl', 'rb') as file:
             cookies = pickle.load(file)
             for cookie in cookies:
                 driver.add_cookie(cookie)
