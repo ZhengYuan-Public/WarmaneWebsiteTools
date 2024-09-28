@@ -1,5 +1,3 @@
-from logging import raiseExceptions
-
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
@@ -7,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import pickle
 import time
+from assets.tools import safe_exit
 
 
 def create_driver(get_cookies=False, url='https://www.warmane.com'):
@@ -24,14 +23,14 @@ def create_driver(get_cookies=False, url='https://www.warmane.com'):
                                 'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get(url)
+    time.sleep(5)
     try:
-        driver.find_element(By.XPATH, '//a[@href="/account/logout" and @title="Login"]')
-        print(f"Connected to {url}, proceeding to login")
+        driver.find_element("xpath", "//a[@title='Login']")
+        print(f"Connected to {url}, proceeding to login.")
         return driver
     except Exception:
         print(f"Failed to connect to {url}, exiting...")
-        driver.quit()
-        exit(1)
+        safe_exit(driver)
 
 def is_logged_in(driver):
     try:
@@ -67,4 +66,3 @@ def load_cookies(driver):
         return True
     except FileNotFoundError:
         return False
-

@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import pandas as pd
+from tqdm import tqdm
 import time
 from assets.tools import *
 
@@ -18,7 +19,7 @@ def sel_realm(driver, realm_name):
     wait.until(EC.visibility_of_element_located((By.XPATH, '//div[@id="realmselector_child"]')))
     realm_name_option = wait.until(EC.element_to_be_clickable((By.XPATH, f'//li[.//span[text()="{realm_name}"]]')))
     realm_name_option.click()
-    print(f"{realm_name} realm selected.")
+    print(f"Realm '{realm_name}' selected.")
     reset_mouse_coord(driver)
     time.sleep(3)
 
@@ -61,7 +62,7 @@ def jump_to_gold(driver):
     wait = WebDriverWait(driver, 10)
     gold_option = wait.until(EC.element_to_be_clickable((By.XPATH, '//div[@class="sideBtn" and .//p[text()="Gold"]]')))
     gold_option.click()
-    print("Jumped to gold sell page.")
+    print("Jumped to 'Gold' sell page.")
     reset_mouse_coord(driver)
     time.sleep(3)
 
@@ -74,7 +75,8 @@ def get_gold_df(driver):
     rows = soup.select('tbody > tr[role="row"].odd, tbody > tr[role="row"].even')
 
     df = pd.DataFrame(columns=['Time', 'Gold Value', 'Coin Value', 'Duration', 'Seller'])
-    for row in rows:
+    print(f'Processing {len(rows)} entries...')
+    for row in tqdm(rows):
         row_tds = row.find_all('td')
         # gold_value = row.find('td', class_='name').find('span', class_='numeric').text
         # coin_value = row.find('td', class_='costValues').find('span', class_='numeric').text
@@ -88,9 +90,9 @@ def get_gold_df(driver):
 
 # --------------------------------------------------------------------------------------------------------------- #
 
-def get_points(driver):
+def collect_daily_points(driver, url='https://www.warmane.com/account'):
     wait = WebDriverWait(driver, 10)
-    driver.get('https://www.warmane.com/account')
+    driver.get(url)
     print("Trying to collect points...")
     try:
         collect_points_button = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Collect points")))
