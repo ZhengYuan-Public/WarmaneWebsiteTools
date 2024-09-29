@@ -1,6 +1,5 @@
 import argparse
 import schedule
-from functools import partial
 from assets.login import *
 from assets.trade import *
 import time
@@ -8,9 +7,10 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--get-cookies',action='store_true', help='Launch in windows mode to save cookies')
-parser.add_argument('--realm', help='Realm name')
+parser.add_argument('--realm', default='Icecrown', help='Realm name')
 parser.add_argument('--char', help='Character name')
 parser.add_argument('--hour', type=int, help='Run the script every <n> hour(s).')
+parser.add_argument('--min', type=int, help='Run the script every <n> minute(s).')
 args = parser.parse_args()
 
 
@@ -62,15 +62,19 @@ def collect_data():
             safe_exit(driver)
 
 
+collect_data()
+
 if args.hour is not None and args.hour > 0:
-    print('Running if-else')
     run_interval = args.hour
-    schedule.every(run_interval).hours.do(partial(collect_data, run_interval))
-else:
-    collect_data()
+    print(f'WarmaneGoldPriceScraper is scheduled to run every {run_interval} hour(s).')
+    schedule.every(run_interval).hours.do(lambda: collect_data())
+elif args.min is not None and args.min > 0:
+    run_interval = args.min
+    print(f'WarmaneGoldPriceScraper is scheduled to run every {run_interval} minute(s).')
+    schedule.every(run_interval).minutes.do(lambda: collect_data())
+
 
 if __name__ == "__main__":
-    print('Running main')
     while True:
         schedule.run_pending()
         time.sleep(1)  # Sleep for a short time to prevent busy-waiting

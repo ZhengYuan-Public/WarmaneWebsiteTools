@@ -30,4 +30,3 @@ def reset_mouse_coord(driver):
 
 def safe_exit(driver):
     driver.quit()
-    exit(1)
