@@ -5,7 +5,6 @@ import datetime
 import pytz
 import schedule
 import toml
-from decorator import decorator
 from selenium.common import NoSuchElementException
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -31,7 +30,7 @@ class ConfigManager:
             return toml.load(f)
 
     def save_toml_config(self):
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, 'w', encoding='utf-8') as f:
             toml.dump(self.config, f)
 
     def add_char(self, char_name, realm_name, account_name):
