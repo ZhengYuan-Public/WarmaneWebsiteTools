@@ -1,10 +1,12 @@
 # Custom
 .idea
 /assets/__pycache__
-.DS_Store
-*.csv
-cookies.pkl
+/csv
+/cookies
+*.toml
+*.pkl
 
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
