@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from webdriver_manager.chrome import ChromeDriverManager
-from assets.Tools import MiscTools
+from src.Tools import MiscTools
 
 
 class DriverManager:
@@ -120,6 +120,9 @@ class AuthStatueHandler:
 
 class CookiesManager:
     def __init__(self, _driver, args):
+        """
+        Cookie for one account.
+        """
         self.driver = _driver
         self.args = args
         self.account_name = args.account_name

@@ -5,7 +5,7 @@ import datetime
 import pytz
 import schedule
 import toml
-from selenium.common import NoSuchElementException
+from selenium.common import TimeoutException, NoSuchElementException
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -26,7 +26,7 @@ class ConfigManager:
         if not os.path.exists(self.config_path):
             print("TOML config file not found.")
             return None
-        with open(self.config_path, 'r') as f:
+        with open(self.config_path, 'r', encoding='utf-8') as f:
             return toml.load(f)
 
     def save_toml_config(self):
@@ -119,7 +119,7 @@ class ConfigManager:
 
     def write_toml_config(self):
         """Writes the current config to the TOML file."""
-        with open(self.config_path, 'w') as f:
+        with open(self.config_path, 'w', encoding='utf-8') as f:
             toml.dump(self.config, f)
 
 
@@ -185,14 +185,16 @@ class PointCollector:
     def collect(self):
         wait = WebDriverWait(self.driver, 10)
         self.driver.get(self.args.url)
-        print("Trying to collect points...")
         try:
             collect_points_button = wait.until(ec.element_to_be_clickable((By.LINK_TEXT, "Collect points")))
+            print("Trying to collect points...")
             collect_points_button.click()
             time.sleep(2)
             if wait.until(ec.element_to_be_clickable((By.LINK_TEXT, "Collect points"))):
-                print('Not eligible to collect points')
+                print("Not eligible to collect points")
             else:
-                print('Points collected successfully!')
+                print('Points collected!')
         except NoSuchElementException:
+            print("Points already collected.")
+        except TimeoutException:
             print("Points already collected.")
