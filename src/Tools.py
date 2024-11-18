@@ -185,6 +185,7 @@ class PointCollector:
     def collect(self):
         wait = WebDriverWait(self.driver, 10)
         self.driver.get(self.args.url)
+        time.sleep(2)
         try:
             collect_points_button = wait.until(ec.element_to_be_clickable((By.LINK_TEXT, "Collect points")))
             print("Trying to collect points...")
@@ -195,6 +196,6 @@ class PointCollector:
             else:
                 print('Points collected!')
         except NoSuchElementException:
-            print("Points already collected.")
+            print("Points already collected (No element).")
         except TimeoutException:
-            print("Points already collected.")
+            print("Points already collected (Timeout).")

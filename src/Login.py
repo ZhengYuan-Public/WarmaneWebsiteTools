@@ -22,7 +22,11 @@ class DriverManager:
 
         self.base_options, self.full_options = self.creat_options()
 
-        # Connectivity test in headless mode
+        if args.debug is True:
+            # If in debug mode, always run in windows mode
+            self.full_options = self.base_options
+
+        # Create driver for connectivity test in headless mode
         self.driver = self.create_driver(self.full_options)
 
         # Cookies Login
