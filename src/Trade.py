@@ -23,7 +23,7 @@ class ItemSelector:
 
     def jump_to_trade(self):
         self.driver.get(self.args.trade_url)
-        print(f'Jumping to trade page {self.args.trade_url}...')
+        logging.info(f'Jumping to trade page {self.args.trade_url}...')
         time.sleep(3)
 
     def realm_selector(self):
@@ -68,7 +68,7 @@ class ItemSelector:
         wait.until(ec.visibility_of_element_located((By.XPATH, dropdown_text_xpath)))
         option = wait.until(ec.element_to_be_clickable((By.XPATH, f'//li[.//span[text()="{dropdown_text}"]]')))
         option.click()
-        print(f"{dropdown_cat} '{dropdown_text}' selected.")
+        logging.info(f"{dropdown_cat} '{dropdown_text}' selected.")
         MiscDriverTools(self.driver, self.args).reset_mouse_coord()
         time.sleep(3)
 
@@ -78,7 +78,7 @@ class ItemSelector:
             (By.XPATH, f'//div[@class="sideBtn"]//p[text()="{menu_name}"]')
         ))
         item_btn.click()
-        print(f"Sidebar item '{menu_name}' selected.")
+        logging.info(f"Sidebar item '{menu_name}' selected.")
         MiscDriverTools(self.driver, self.args).reset_mouse_coord()
         time.sleep(3)
 
@@ -107,8 +107,8 @@ class GoldParser:
         soup = BeautifulSoup(table_html, 'html.parser')
         rows = soup.select('tbody > tr[role="row"].odd, tbody > tr[role="row"].even')
 
-        print(f'--------Acquiring gold price @{self.parse_time}--------')
-        print(f'Processing {len(rows)} entries...')
+        logging.info(f'------ Acquiring gold price @{self.parse_time} ------'.center(40))
+        logging.info(f'Processing {len(rows)} entries...')
 
         df = pd.DataFrame(columns=['Time', 'Gold Value', 'Coin Value', 'Duration', 'Seller'])
         for row in tqdm(rows):
@@ -129,4 +129,4 @@ class GoldParser:
     def save_to_csv(self):
         os.makedirs(os.path.dirname(self.csv_path), exist_ok=True)
         self.data.to_csv(self.csv_path, index=False)
-        print(f'--------Gold price @{self.parse_time} saved--------')
+        logging.info(f'Gold price @{self.parse_time} saved')

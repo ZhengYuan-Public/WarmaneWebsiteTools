@@ -21,7 +21,7 @@ class ConfigManager:
 
     def load_toml_config(self):
         if not os.path.exists(self.config_path):
-            print("TOML config file not found.")
+            logging.info("TOML config file not found.")
             return None
         with open(self.config_path, 'r', encoding='utf-8') as f:
             return toml.load(f)
@@ -33,7 +33,7 @@ class ConfigManager:
     def add_char(self, char_name, realm_name, account_name):
         """Adds a character to the specified account and realm."""
         if account_name not in self.config['accounts']:
-            print(f"Account {account_name} not found in config.")
+            logging.error(f"Account {account_name} not found in config.")
             return
 
         # Ensure the realm exists for the account
@@ -43,27 +43,27 @@ class ConfigManager:
         # Add the character if it doesn't already exist
         if char_name not in self.config['accounts'][account_name][realm_name]['chars']:
             self.config['accounts'][account_name][realm_name]['chars'].append(char_name)
-            print(f"Character {char_name} added to realm {realm_name} under account {account_name}.")
+            logging.info(f"Character {char_name} added to realm {realm_name} under account {account_name}.")
             self.save_toml_config()
         else:
-            print(f"Character {char_name} already exists in {realm_name}.")
+            logging.info(f"Character {char_name} already exists in {realm_name}.")
 
     def del_char(self, char_name, realm_name, account_name):
         """Deletes a character from the specified account and realm."""
         if account_name not in self.config['accounts']:
-            print(f"Account {account_name} not found in config.")
+            logging.error(f"Account {account_name} not found in config.")
             return
 
         if realm_name not in self.config['accounts'][account_name]:
-            print(f"Realm {realm_name} not found for account {account_name}.")
+            logging.error(f"Realm {realm_name} not found for account {account_name}.")
             return
 
         if char_name in self.config['accounts'][account_name][realm_name]['chars']:
             self.config['accounts'][account_name][realm_name]['chars'].remove(char_name)
-            print(f"Character {char_name} removed from realm {realm_name} under account {account_name}.")
+            logging.info(f"Character {char_name} removed from realm {realm_name} under account {account_name}.")
             self.save_toml_config()
         else:
-            print(f"Character {char_name} not found in {realm_name}.")
+            logging.error(f"Character {char_name} not found in {realm_name}.")
 
     def rename_char(self, old_char_name, new_char_name, realm_name, account_name):
         """Renames a character under the specified account and realm."""
