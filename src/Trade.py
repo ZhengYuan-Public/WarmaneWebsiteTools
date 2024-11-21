@@ -1,5 +1,6 @@
 import os
 import time
+import logging
 import pandas as pd
 from tqdm import tqdm
 from bs4 import BeautifulSoup

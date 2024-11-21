@@ -1,6 +1,7 @@
 import os
 import pickle
 import time
+import logging
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -74,10 +75,10 @@ class AuthStatueHandler:
     def is_connected(self):
         try:
             self.driver.find_element("xpath", "//a[@title='Login']")
-            print(f"Connected to {self.driver.current_url}, proceeding to login.")
+            logging.info(f'Connected to {self.driver.current_url}, proceeding to login.')
             return True
         except NoSuchElementException:
-            print(f"Failed to connect to {self.driver.current_url}, exiting...")
+            logging.error(f'Failed to connect to {self.driver.current_url}, exiting...')
             self.driver.quit()
 
     def is_logged_in(self):
@@ -86,7 +87,7 @@ class AuthStatueHandler:
             try:
                 self.driver.find_element(By.XPATH,
                                          '//a[@href="/account/authentication" and contains(@class, "active")]')
-                print(f'Two factor authentication detected, waiting for authentication...')
+                logging.info(f'Two factor authentication detected, waiting for authentication...')
                 return False
             except NoSuchElementException:
                 return True
@@ -96,27 +97,27 @@ class AuthStatueHandler:
     def cookies_login(self):
         CookiesManager(self.driver, self.args).load_cookies()
         if self.is_logged_in():
-            print('Cookies login successfully.')
+            logging.info('Cookies login successfully.')
             return True
         else:
-            print('Cookies has expired. Starting in windows mode to update cookies...')
+            logging.warning('Cookies has expired. Starting in windows mode to update cookies...')
             return False
 
     def manual_login(self):
 
         def wait_for_manual_login(timeout=600):
             start_time = time.time()
-            print('Please manually login within 5 minutes.')
+            logging.info('Please manually login within 5 minutes.')
             while time.time() - start_time < timeout:
                 if self.is_logged_in():
-                    print('Waiting for manual login...')
+                    logging.info('Waiting for manual login...')
                     return True
                 # Check every 5 seconds
                 time.sleep(5)
             return False
 
         if not wait_for_manual_login():
-            print('Manual login timed out.')
+            logging.info('Manual login timed out.')
             self.driver.quit()
         else:
             return True
@@ -134,7 +135,7 @@ class CookiesManager:
 
     def load_cookies(self):
         if not os.path.exists(self.cookies_path):
-            print(f'Cookies for {self.account_name} not found. Starting in windows mode to get cookies...')
+            logging.info(f'Cookies for {self.account_name} not found. Starting in windows mode to get cookies...')
             return False
         try:
             with open(self.cookies_path, 'rb') as file:
@@ -145,7 +146,7 @@ class CookiesManager:
             time.sleep(3)
             return True
         except Exception as e:
-            print(f"Failed to load cookies: {e}")
+            logging.error(f'Failed to load cookies: {e}')
             return False
 
     def update_cookies(self):
@@ -156,6 +157,6 @@ class CookiesManager:
             with open(self.cookies_path, 'wb') as file:
                 pickle.dump(cookies, file)
             self.args.update_time = MiscTools.get_localtime()
-            print(f'Cookies for {self.account_name} updated @{self.args.update_time}.')
+            logging.info(f'Cookies for {self.account_name} updated @{self.args.update_time}.')
         except Exception as e:
-            print(f"Failed to update cookies for {self.account_name}: {e}")
+            logging.error(f'Failed to update cookies for {self.account_name}: {e}')

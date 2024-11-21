@@ -3,37 +3,33 @@
 ## Example arg-config.toml
 
 ```toml
-# Arguments Required
-# ------------------------------------------------------------------------------------- #
+# Mandatory Arguments
+debug = true
+
+csv_dir = './csv'
+cookies_dir = './cookies'
+acc_config = 'acc-config.toml'
+url = 'https://www.warmane.com/account'
+trade_url = 'https://www.warmane.com/account/trade'
+
+# 1. Arguments for mode ==> 'GoldPrice'
 # args.realm: {'Onyxia', 'Lordaeron', 'Icecrown', 'Blackrock', 'Frostwolf'}
 # args.char: The character name.
 # args.trade_type: {'Item Trade', 'Character Trade'}
 # args.trade_action: {'Buy', 'Sell'}
-# ------------------------------------------------------------------------------------- #
-# 1. Mandatory arguments for > mode = 'Gold Price'
-mode = 'Gold'
+
+mode = 'GoldPrice'
 realm = 'Icecrown'
-char = 'MyCharacterName'
+char = 'char_name'
 trade_type = 'Item Trade'
 trade_action = 'Buy'
 
-# 2. Mantadory arguments for > mode = 'Points'
-# mode = 'Points'
-
-# ------------------------------------------------------------------------------------- #
-acc_config = 'acc-config.toml'
-url = 'https://www.warmane.com/account'
-trade_url = 'https://www.warmane.com/account/trade'
-# ------------------------------------------------------------------------------------- #
-# Directory where CSV files should be saved
-csv_dir = './csv'
-cookies_dir = './cookies'
-
-# ------------------------------------------------------------------------------------- #
-# Frequency to run the script
-# hour = 1
+hour = 1
 min = 15
 
+# 2. Arguments for mode ==> 'CollectPoint'
+mode = 'CollectPoint'
+account_names = ['char_name_1', 'char_name_2', 'char_name_3']
 ```
 
 ## Example acc-config.toml

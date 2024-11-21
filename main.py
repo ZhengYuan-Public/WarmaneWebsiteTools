@@ -1,8 +1,12 @@
 import argparse
 from src.Login import DriverManager
 from src.Trade import GoldParser
-from src.Tools import ConfigManager, TaskScheduler, PointCollector
+from src.Point import PointCollector
+from src.Tools import ConfigManager, TaskScheduler
+from src.Logging import ProjectLogging
 
+
+ProjectLogging()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--mode', help='<Gold> or <Points>.')
@@ -27,11 +31,10 @@ if __name__ == '__main__':
         scheduler = TaskScheduler(args, run_gold_parsing_task)
         scheduler.start_schedule()
 
-    elif args.mode == 'Point':
+    elif args.mode == 'CollectPoint':
         account_names = args.account_names
         for account_name in account_names:
             args.account_name = account_name
-            print(f'Collecting Points: {args.account_name}')
             warmane_page = DriverManager(args)
             pc = PointCollector(warmane_page.driver, args)
             pc.collect()
