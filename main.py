@@ -24,7 +24,13 @@ args = parser.parse_args()
 acc_manager = ConfigManager(args.acc_config, args)
 
 if __name__ == '__main__':
-    if args.mode == 'GoldPrice':
+    if args.mode == 'Login':
+        account_names = args.account_names
+        for account_name in account_names:
+            args.account_name = account_name
+            warmane_page = DriverManager(args)
+
+    elif args.mode == 'GoldPrice':
         args.account_name = acc_manager.get_account_by_realm_and_character(args.realm, args.char)
         logging.info(f'Account-Realm-Character: {args.account_name}-{args.realm}-{args.char}')
         warmane_page = DriverManager(args)
@@ -51,4 +57,3 @@ if __name__ == '__main__':
                 executor.map(lambda acc: async_collect_points(acc, args), account_names)
         except KeyboardInterrupt:
             logging.info("Execution interrupted by user.")
-
