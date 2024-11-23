@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import datetime
 import logging
@@ -172,3 +173,10 @@ class MiscTools:
         current_time_local = current_time_utc.astimezone(china_timezone)
         formatted_time = current_time_local.strftime("%Y-%m-%d_%H-%M-%S")
         return formatted_time
+
+    @staticmethod
+    def regex_match_float(_text: str):
+        match = re.search(r"Points:\s*([\d.]+)", _text)
+        if match:
+            return float(match.group(1))
+        return None

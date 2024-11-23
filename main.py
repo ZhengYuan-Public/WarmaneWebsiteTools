@@ -1,5 +1,8 @@
 import argparse
 import logging
+import copy
+
+from concurrent.futures import ThreadPoolExecutor
 
 from src.Login import DriverManager
 from src.Trade import GoldParser
@@ -34,9 +37,18 @@ if __name__ == '__main__':
 
     elif args.mode == 'CollectPoint':
         account_names = args.account_names
-        for account_name in account_names:
-            args.account_name = account_name
-            warmane_page = DriverManager(args)
-            pc = PointCollector(warmane_page.driver, args)
+
+        def async_collect_points(_account_name, _args):
+            per_args = copy.deepcopy(_args)
+            per_args.account_name = _account_name
+            per_warmane_page = DriverManager(per_args)
+            pc = PointCollector(per_warmane_page.driver, per_args)
             pc.collect()
-            warmane_page.driver.quit()
+            per_warmane_page.driver.quit()
+
+        try:
+            with ThreadPoolExecutor() as executor:
+                executor.map(lambda acc: async_collect_points(acc, args), account_names)
+        except KeyboardInterrupt:
+            logging.info("Execution interrupted by user.")
+
