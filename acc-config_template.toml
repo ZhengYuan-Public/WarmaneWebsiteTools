@@ -1,0 +1,10 @@
+# accounts-account_name-realm_name-chars
+[accounts]
+
+[accounts.YOUR_ACCOUNT_NAME]
+cookies_path = ''
+last_updated_time = ''
+passwd = 'YOUR_PASSWORD'
+secret = 'YOUR_2FA_SECRET'
+[accounts.YOUR_ACCOUNT_NAME.YOUR_REALM]
+chars = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']

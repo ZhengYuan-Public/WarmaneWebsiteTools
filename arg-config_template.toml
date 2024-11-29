@@ -1,0 +1,25 @@
+debug = false
+csv_dir = './csv'
+cookies_dir = './cookies'
+acc_config = 'acc-config.toml'
+url = 'https://www.warmane.com/account'
+trade_url = 'https://www.warmane.com/account/trade'
+
+# --------- Only Keep ONE mode's args --------- #
+
+# 1. Arguments for mode ==> 'Login'
+#mode = 'Login'
+#account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
+
+# 2. Arguments for mode ==> 'GoldPrice'
+#mode = 'GoldPrice'
+#realm = 'Icecrown'         # Choose one from ['Onyxia', 'Lordaeron', 'Icecrown', 'Blackrock', 'Frostwolf']
+#char = 'YOUR_CHARACTER'
+#trade_type = 'Item Trade'  # Choose one from ['Item Trade', 'Character Trade']
+#trade_action = 'Buy'       # Choose one from ['Buy', 'Sell']
+#hour = 1                   # Run interval (hour)
+#min = 15                   # Run interval (min)
+
+# 3. Arguments for mode ==> 'CollectPoint'
+#mode = 'CollectPoint'
+#account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
