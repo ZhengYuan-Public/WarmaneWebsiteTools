@@ -1,25 +1,30 @@
 debug = false
+
+# Warmane Website Args
 csv_dir = './csv'
 cookies_dir = './cookies'
 acc_config = 'acc-config.toml'
 url = 'https://www.warmane.com/account'
 trade_url = 'https://www.warmane.com/account/trade'
 
-# --------- Only Keep ONE mode's args --------- #
-
+[modes]
 # 1. Arguments for mode ==> 'Login'
-#mode = 'Login'
-#account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
-
+[modes.Login]
+account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
 # 2. Arguments for mode ==> 'GoldPrice'
-#mode = 'GoldPrice'
-#realm = 'Icecrown'         # Choose one from ['Onyxia', 'Lordaeron', 'Icecrown', 'Blackrock', 'Frostwolf']
-#char = 'YOUR_CHARACTER'
-#trade_type = 'Item Trade'  # Choose one from ['Item Trade', 'Character Trade']
-#trade_action = 'Buy'       # Choose one from ['Buy', 'Sell']
-#hour = 1                   # Run interval (hour)
-#min = 15                   # Run interval (min)
-
+[modes.GoldPrice]
+realm = 'Icecrown'         # Choose one from ['Onyxia', 'Lordaeron', 'Icecrown', 'Blackrock', 'Frostwolf']
+char = 'YOUR_CHARACTER'
+trade_type = 'Item Trade'  # Choose one from ['Item Trade', 'Character Trade']
+trade_action = 'Buy'       # Choose one from ['Buy', 'Sell']
+# Repeat Interval
+hour = 1
+min = 15
 # 3. Arguments for mode ==> 'CollectPoint'
-#mode = 'CollectPoint'
-#account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
+[modes.CollectPoint]
+account_names = ['YOUR_CHARACTER_1', 'YOUR_CHARACTER_2', 'YOUR_CHARACTER_3']
+
+# Experimental
+wow_autologin = false
+wow_exe = 'D:\World of Warcraft 3.3.5a_Multi_HD\wow.exe'
+wow_lang = 'en'            # Choose one from ['en', 'cn']

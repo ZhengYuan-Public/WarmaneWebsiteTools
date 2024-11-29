@@ -1,5 +1,6 @@
 import os
 import pickle
+import pyotp
 import time
 import logging
 
@@ -8,7 +9,9 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+
 from webdriver_manager.chrome import ChromeDriverManager
+
 from src.Tools import MiscTools
 
 
@@ -32,18 +35,18 @@ class DriverManager:
 
         # Cookies Login
         ## Try to load cookies to login
-        AuthStatueHandler(self.driver, self.args).cookies_login()
-        if not AuthStatueHandler(self.driver, self.args).is_logged_in():
-            # Cookies not exist OR expire, then start in windows mode and update cookies
+        AuthStatusHandler(self.driver, self.args).cookies_login()
+        if not AuthStatusHandler(self.driver, self.args).is_logged_in():
+            # If cookies don't exist OR have expired, then start in windows mode and update cookies
             self.driver.quit()
             self.driver = self.create_driver(self.base_options)
-            AuthStatueHandler(self.driver, self.args).manual_login()
+            AuthStatusHandler(self.driver, self.args).manual_login()
             CookiesManager(self.driver, args).update_cookies()
 
     def create_driver(self, options):
         _driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         _driver.get(self.args.url)
-        if AuthStatueHandler(_driver, self.args).is_connected():
+        if AuthStatusHandler(_driver, self.args).is_connected():
             return _driver
 
     @staticmethod
@@ -67,7 +70,7 @@ class DriverManager:
         return base_options, full_options
 
 
-class AuthStatueHandler:
+class AuthStatusHandler:
     def __init__(self, _driver, args):
         self.driver = _driver
         self.args = args
@@ -84,10 +87,15 @@ class AuthStatueHandler:
     def is_logged_in(self):
         try:
             self.driver.find_element(By.XPATH, '//a[@href="/account/logout" and @title="Logout"]')
+            # Detect if 2FA is required
             try:
                 self.driver.find_element(By.XPATH,
                                          '//a[@href="/account/authentication" and contains(@class, "active")]')
                 logging.info(f'Two factor authentication detected, waiting for authentication...')
+
+                if self.args.auto_solve_2fa:
+                    self.solve_2fa(self.args.account_name)
+
                 return False
             except NoSuchElementException:
                 return True
@@ -121,6 +129,17 @@ class AuthStatueHandler:
             self.driver.quit()
         else:
             return True
+
+    def solve_2fa(self, _acc_name):
+        auth_code_input = self.driver.find_element(By.ID, "authCode")
+        submit_button = self.driver.find_element(By.CLASS_NAME, "wm-ui-btn")
+
+        acc_otp = TwoFactorAuthHandler(self.args).get_totp(_acc_name)
+        logging.info(f"2FA code for {_acc_name} is {acc_otp}")
+        auth_code_input.send_keys(acc_otp)
+
+        time.sleep(2)
+        submit_button.click()
 
 
 class CookiesManager:
@@ -160,3 +179,16 @@ class CookiesManager:
             logging.info(f'Cookies for {self.account_name} updated @{self.args.update_time}.')
         except Exception as e:
             logging.error(f'Failed to update cookies for {self.account_name}: {e}')
+
+
+class TwoFactorAuthHandler:
+    """
+    Given an account name, return Time-based One-Time Password (TOTP).
+    """
+    def __init__(self, args):
+        self.args = args
+
+    def get_totp(self, _acc_name):
+        _acc_secret = self.args.accounts[_acc_name]['secret']
+        _totp = pyotp.TOTP(_acc_secret)
+        return _totp.now()

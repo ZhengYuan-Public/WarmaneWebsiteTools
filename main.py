@@ -11,27 +11,27 @@ from src.Tools import ConfigManager, TaskScheduler
 from src.Logging import ProjectLogging
 
 
+# Instantiate Logger
 ProjectLogging()
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--arg-config', default='arg-config.toml', help='Argparse configuration file.')
-temp_args = parser.parse_args()
+# CLI Args
+cli_parser = argparse.ArgumentParser()
+cli_parser.add_argument('--arg-config-path', default='arg-config.toml')
+cli_parser.add_argument('--mode', default='Login', help='Login, GoldPrice, or CollectPoint')
 
-arg_manager = ConfigManager(temp_args.arg_config, temp_args)
-parser.set_defaults(**arg_manager.config)
-args = parser.parse_args()
-
-acc_manager = ConfigManager(args.acc_config, args)
+arg_manager = ConfigManager(cli_parser)
+args = arg_manager.args
 
 if __name__ == '__main__':
     if args.mode == 'Login':
         account_names = args.account_names
+
         for account_name in account_names:
             args.account_name = account_name
             warmane_page = DriverManager(args)
 
     elif args.mode == 'GoldPrice':
-        args.account_name = acc_manager.get_account_by_realm_and_character(args.realm, args.char)
+        args.account_name = arg_manager.get_account_by_realm_and_character(args.realm, args.char)
         logging.info(f'Account-Realm-Character: {args.account_name}-{args.realm}-{args.char}')
         warmane_page = DriverManager(args)
 
