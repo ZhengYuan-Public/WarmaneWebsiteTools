@@ -1,6 +1,8 @@
 debug = false
+auto_solve_2fa = true
 
 # Warmane Website Args
+[warmane]
 csv_dir = './csv'
 cookies_dir = './cookies'
 acc_config = 'acc-config.toml'

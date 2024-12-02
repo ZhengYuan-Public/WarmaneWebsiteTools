@@ -12,17 +12,18 @@ from selenium.common.exceptions import NoSuchElementException
 
 from webdriver_manager.chrome import ChromeDriverManager
 
-from src.Tools import MiscTools
+from src.Tool import MiscTools
 
 
 class DriverManager:
     """
     Needed args from argparse:
-    - args.url: The URL to connect to (e.g., 'https://www.warmane.com').
+    - url: The URL to connect to (e.g., 'https://www.warmane.com').
     - args.account_name: The account name used for saving/loading cookies.
     """
     def __init__(self, args):
         self.args = args
+        self.url = args.warmane['url']
 
         self.base_options, self.full_options = self.creat_options()
 
@@ -45,7 +46,7 @@ class DriverManager:
 
     def create_driver(self, options):
         _driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        _driver.get(self.args.url)
+        _driver.get(self.url)
         if AuthStatusHandler(_driver, self.args).is_connected():
             return _driver
 
@@ -150,7 +151,7 @@ class CookiesManager:
         self.driver = _driver
         self.args = args
         self.account_name = args.account_name
-        self.cookies_path = os.path.join(self.args.cookies_dir, self.account_name, 'cookies.pkl')
+        self.cookies_path = os.path.join(self.args.warmane['cookies_dir'], self.account_name, 'cookies.pkl')
 
     def load_cookies(self):
         if not os.path.exists(self.cookies_path):
